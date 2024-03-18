@@ -639,12 +639,12 @@ RETRO_API void retro_run()
 
 RETRO_API size_t retro_serialize_size()
 {
-	return emulator->serialize().size();
+	return emulator->serialize(0).size();
 }
 
 RETRO_API bool retro_serialize(void *data, size_t size)
 {
-	memcpy(data, emulator->serialize().data(), size);
+	memcpy(data, emulator->serialize(0).data(), size);
 	return true;
 }
 
