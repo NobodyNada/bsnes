@@ -38,7 +38,7 @@ jobs:
       - name: Build bsnes
         run: |
           make -j8 local=false USER_FLAGS="-target x86_64-apple-darwin"
-          mv bsnes_mvi.dylib bsnes_mvi.aarch64.dylib
+          mv bsnes_mvi.dylib bsnes_mvi.x86_64.dylib
       - name: Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
