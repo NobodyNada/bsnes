@@ -9,7 +9,7 @@
 #undef WIN32_LEAN_AND_LEAN
 #undef _WIN32_WINNT
 #undef _WIN32_IE
-#undef __MSVCRT_VERSION__
+//#undef __MSVCRT_VERSION__
 #undef NOMINMAX
 #undef PATH_MAX
 
@@ -18,7 +18,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define _WIN32_WINNT WINVER
 #define _WIN32_IE WINVER
-#define __MSVCRT_VERSION__ WINVER
+//#define __MSVCRT_VERSION__ WINVER
 #define NOMINMAX
 #define PATH_MAX 260
 
