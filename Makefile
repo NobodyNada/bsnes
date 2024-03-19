@@ -63,7 +63,7 @@ ifneq ($(GIT_VERSION)," unknown")
 endif
 
 ifeq ($(platform), unix)
-   TARGET := $(TARGET_NAME)_libretro.so
+   TARGET := $(TARGET_NAME)_mvi.so
    fpic := -fPIC
    SHARED := -shared -Wl,--no-undefined -Wl,--version-script=$(CORE_DIR)/bsnes/target-libretro/link.T
    ifneq ($(shell uname -p | grep -E '((i.|x)86|amd64)'),)
@@ -74,7 +74,7 @@ ifeq ($(platform), unix)
    endif
    LDFLAGS += -ldl
 else ifeq ($(platform), osx)
-   TARGET := $(TARGET_NAME)_libretro.dylib
+   TARGET := $(TARGET_NAME)_mvi.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
 ifeq ($(arch),ppc)
@@ -88,7 +88,7 @@ endif
 # iOS
 else ifneq (,$(findstring ios,$(platform)))
 
-   TARGET := $(TARGET_NAME)_libretro_ios.dylib
+   TARGET := $(TARGET_NAME)_mvi_ios.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
 
@@ -116,7 +116,7 @@ endif
 
 # tvOS
 else ifeq ($(platform), tvos-arm64)
-   TARGET := $(TARGET_NAME)_libretro_tvos.dylib
+   TARGET := $(TARGET_NAME)_mvi_tvos.dylib
    fpic := -fPIC
    SHARED := -dynamiclib
 
@@ -125,7 +125,7 @@ ifeq ($(IOSSDK),)
 endif
 
 else ifeq ($(platform), qnx)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).so
+   TARGET := $(TARGET_NAME)_mvi_$(platform).so
    fpic := -fPIC
    SHARED := -lcpp -lm -shared -Wl,--no-undefined -Wl,--version-script=$(CORE_DIR)/bsnes/target-libretro/link.T
    CC = qcc -Vgcc_ntoarmv7le
@@ -133,7 +133,7 @@ else ifeq ($(platform), qnx)
    AR = QCC -Vgcc_ntoarmv7le
    FLAGS += -D__BLACKBERRY_QNX__ -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 else ifeq ($(platform), ps3)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
    CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
    CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++.exe
    AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
@@ -142,7 +142,7 @@ else ifeq ($(platform), ps3)
    FLAGS += -DARCH_POWERPC_ALTIVEC
    STATIC_LINKING = 1
 else ifeq ($(platform), sncps3)
-   TARGET := $(TARGET_NAME)_libretro_ps3.a
+   TARGET := $(TARGET_NAME)_mvi_ps3.a
    CC = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
    CXX = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
    AR = $(CELL_SDK)/host-win32/sn/bin/ps3snarl.exe
@@ -153,7 +153,7 @@ else ifeq ($(platform), sncps3)
    FLAGS += -DARCH_POWERPC_ALTIVEC
    STATIC_LINKING = 1
 else ifeq ($(platform), psl1ght)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
    CC = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
    CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
    AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
@@ -162,7 +162,7 @@ else ifeq ($(platform), psl1ght)
 
 # PSP
 else ifeq ($(platform), psp1)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
    CC = psp-gcc$(EXE_EXT)
    CXX = psp-g++$(EXE_EXT)
    AR = psp-ar$(EXE_EXT)
@@ -172,7 +172,7 @@ else ifeq ($(platform), psp1)
 
 # Vita
 else ifeq ($(platform), vita)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
 	CC = arm-vita-eabi-gcc$(EXE_EXT)
 	CXX = arm-vita-eabi-g++$(EXE_EXT)
 	AR = arm-vita-eabi-ar$(EXE_EXT)
@@ -181,7 +181,7 @@ else ifeq ($(platform), vita)
 
 # Xbox 360
 else ifeq ($(platform), xenon)
-   TARGET := $(TARGET_NAME)_libretro_xenon360.a
+   TARGET := $(TARGET_NAME)_mvi_xenon360.a
    CC = xenon-gcc$(EXE_EXT)
    CXX = xenon-g++$(EXE_EXT)
    AR = xenon-ar$(EXE_EXT)
@@ -192,7 +192,7 @@ else ifeq ($(platform), xenon)
 # Nintendo Switch (libnx)
 else ifeq ($(platform), libnx)
 include $(DEVKITPRO)/libnx/switch_rules
-    TARGET := $(TARGET_NAME)_libretro_$(platform).a
+    TARGET := $(TARGET_NAME)_mvi_$(platform).a
     DEFINES := -DSWITCH=1 -U__linux__ -U__linux -DRARCH_INTERNAL
     CFLAGS  +=  $(DEFINES) -fPIE -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -Wl,--allow-multiple-definition -specs=$(LIBNX)/switch.specs
     CFLAGS  += $(INCDIRS)
@@ -203,7 +203,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 
 # Nintendo Gamecube
 else ifeq ($(platform), ngc)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
    CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
    CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++$(EXE_EXT)
    AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
@@ -215,7 +215,7 @@ else ifeq ($(platform), ngc)
 
 # wii
 else ifeq ($(platform), wii)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
    CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
    CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++$(EXE_EXT)
    AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
@@ -227,7 +227,7 @@ else ifeq ($(platform), wii)
 
 # wiiu
 else ifeq ($(platform), wiiu)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   TARGET := $(TARGET_NAME)_mvi_$(platform).a
    CC = $(DEVKITPPC)/bin/powerpc-eabi-gcc$(EXE_EXT)
    CXX = $(DEVKITPPC)/bin/powerpc-eabi-g++$(EXE_EXT)
    AR = $(DEVKITPPC)/bin/powerpc-eabi-ar$(EXE_EXT)
@@ -238,7 +238,7 @@ else ifeq ($(platform), wiiu)
    STATIC_LINKING = 1
 
 else ifneq (,$(findstring armv,$(platform)))
-   TARGET := $(TARGET_NAME)_libretro.so
+   TARGET := $(TARGET_NAME)_mvi.so
    fpic := -fPIC
    SHARED := -shared -Wl,--no-undefined -Wl,--version-script=$(CORE_DIR)/bsnes/target-libretro/link.T
    CC = gcc
@@ -354,12 +354,12 @@ else ifneq (,$(findstring windows_msvc2017,$(platform)))
     
 	export INCLUDE := $(INCLUDE);$(WindowsSDKSharedIncludeDir);$(WindowsSDKUCRTIncludeDir);$(WindowsSDKUMIncludeDir)
 	export LIB := $(LIB);$(WindowsSDKUCRTLibDir);$(WindowsSDKUMLibDir)
-	TARGET := $(TARGET_NAME)_libretro.dll
+	TARGET := $(TARGET_NAME)_mvi.dll
 	LDFLAGS += -DLL
 
 # Emscripten
 else ifeq ($(platform), emscripten)
-   TARGET := $(TARGET_NAME)_libretro_$(platform).bc
+   TARGET := $(TARGET_NAME)_mvi_$(platform).bc
    STATIC_LINKING = 1
 
 # Windows MSVC 2005 x86
@@ -377,7 +377,7 @@ WindowsSdkDir := $(INETSDK)
 
 export INCLUDE := $(INCLUDE);$(INETSDK)/Include;libretro-common/include/compat/msvc
 export LIB := $(LIB);$(WindowsSdkDir);$(INETSDK)/Lib
-TARGET := $(TARGET_NAME)_libretro.dll
+TARGET := $(TARGET_NAME)_mvi.dll
 LDFLAGS += -DLL
 CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
 LIBS =
@@ -398,14 +398,14 @@ WindowsSdkDir := $(INETSDK)
 
 export INCLUDE := $(INCLUDE);$(INETSDK)/Include;libretro-common/include/compat/msvc
 export LIB := $(LIB);$(WindowsSdkDir);$(INETSDK)/Lib
-TARGET := $(TARGET_NAME)_libretro.dll
+TARGET := $(TARGET_NAME)_mvi.dll
 LDFLAGS += -DLL
 CFLAGS += -D_CRT_SECURE_NO_DEPRECATE
 WINDOWS_VERSION=1
 
 # Windows
 else
-   TARGET := $(TARGET_NAME)_libretro.dll
+   TARGET := $(TARGET_NAME)_mvi.dll
    CC ?= gcc
    CXX ?= g++
    IS_X86 = 1
