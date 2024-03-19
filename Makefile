@@ -5,6 +5,8 @@ CORE_DIR := .
 CFLAGS :=
 CXXFLAGS :=
 
+USER_FLAGS ?=
+
 SPACE :=
 SPACE := $(SPACE) $(SPACE)
 BACKSLASH :=
@@ -452,8 +454,8 @@ FLAGS += $(fpic) $(NEW_GCC_FLAGS) $(INCFLAGS)
 
 FLAGS += $(ENDIANNESS_DEFINES) $(WARNINGS) $(CORE_DEFINE) -DSTDC_HEADERS -D__STDC_LIMIT_MACROS -D__LIBRETRO__ -DSFC_LAGFIX -DGB_INTERNAL -DDISABLE_DEBUGGER $(EXTRA_INCLUDES) $(SOUND_DEFINE)
 
-CXXFLAGS += -std=c++17 $(FLAGS)
-CFLAGS   += $(FLAGS)
+CXXFLAGS += -std=c++17 $(FLAGS) $(USER_FLAGS)
+CFLAGS   += $(FLAGS) $(USER_FLAGS)
 
 OBJOUT   = -o 
 LINKOUT  = -o 
@@ -493,7 +495,7 @@ ifeq ($(platform), emscripten)
 else ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
-	$(LD) $(LINKOUT)$@ $^ $(LDFLAGS) $(LIBS)
+	$(LD) $(LINKOUT)$@ $^ $(LDFLAGS) $(USER_FLAGS) $(LIBS)
 endif
 
 %.o: %.cpp
