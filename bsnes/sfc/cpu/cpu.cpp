@@ -77,8 +77,8 @@ auto CPU::power(bool reset) -> void {
 
   reader = {&CPU::readRAM, this};
   writer = {&CPU::writeRAM, this};
-  bus.map(reader, writer, "00-3f,80-bf:0000-1fff", 0x2000);
-  bus.map(reader, writer, "7e-7f:0000-ffff", 0x20000);
+  bus.map_host_accessible(reader, writer, "00-3f,80-bf:0000-1fff", 0x2000, 0, 0, "WRAM", wram);
+  bus.map_host_accessible(reader, writer, "7e-7f:0000-ffff", 0x20000, 0, 0, "WRAM", wram);
 
   reader = {&CPU::readAPU, this};
   writer = {&CPU::writeAPU, this};

@@ -1,4 +1,5 @@
 #include <sfc/sfc.hpp>
+#include "../../target-libretro/libretro.h"
 
 namespace SuperFamicom {
 
@@ -72,6 +73,48 @@ auto Bus::map(
   }
 
   return id;
+}
+
+
+auto Bus::map_host_accessible(
+const function<uint8 (uint, uint8)>& read,
+const function<void (uint, uint8)>& write,
+const string& address, uint size, uint base, uint mask,
+const string& addrspace, void *data
+) -> uint {
+  auto ret = map(read, write, address, size, base, mask);
+  auto p = address.split(":", 1L);
+  auto banks = p(0).split(",");
+  auto addrs = p(1).split(",");
+  for(auto& bank : banks) {
+    for(auto& addr : addrs) {
+      auto bankRange = bank.split("-", 1L);
+      auto addrRange = addr.split("-", 1L);
+      uint bankLo = bankRange(0).hex();
+      uint bankHi = bankRange(1, bankRange(0)).hex();
+      uint addrLo = addrRange(0).hex();
+      uint addrHi = addrRange(1, addrRange(0)).hex();
+
+      for(uint bank = bankLo; bank <= bankHi; bank++) {
+        uint addr = addrLo; 
+        uint offset = reduce(bank << 16 | addr, mask);
+        if(size) base = mirror(base, size);
+        if(size) offset = base + mirror(offset, size - base);
+        
+        retro_memory_descriptor desc = {};
+        desc.start = bank << 16 | addr;
+        desc.ptr = data;
+        desc.offset = offset;
+        desc.disconnect = 0xFF0000 | mask;
+        desc.select = 0xFF0000 | ~(addrLo ^ addrHi);
+        desc.len = min(size, addrHi - addrLo + 1);
+        desc.addrspace = strdup(addrspace.data());
+        host_memory_descriptors.append(desc);
+      }
+    }
+  }
+
+  return ret;
 }
 
 auto Bus::unmap(const string& addr) -> void {

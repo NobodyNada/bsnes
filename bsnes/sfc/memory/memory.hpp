@@ -1,3 +1,5 @@
+#include "../../target-libretro/libretro.h"
+
 struct Memory {
   static bool GlobalWriteEnable;
 
@@ -35,8 +37,15 @@ struct Bus {
     const function<void (uint, uint8)>& write,
     const string& address, uint size = 0, uint base = 0, uint mask = 0
   ) -> uint;
+  auto map_host_accessible(
+    const function<uint8 (uint, uint8)>& read,
+    const function<void (uint, uint8)>& write,
+    const string& address, uint size, uint base, uint mask,
+    const string& addrspace, void *data
+  ) -> uint;
   auto unmap(const string& address) -> void;
 
+  vector<retro_memory_descriptor> host_memory_descriptors;
 private:
   uint8* lookup = nullptr;
   uint32* target = nullptr;
@@ -44,6 +53,7 @@ private:
   function<uint8 (uint, uint8)> reader[256];
   function<void  (uint, uint8)> writer[256];
   uint counter[256];
+
 };
 
 extern Bus bus;

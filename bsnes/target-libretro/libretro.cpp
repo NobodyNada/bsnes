@@ -31,6 +31,8 @@ static void audio_queue(int16_t left, int16_t right)
 
 #include "program.cpp"
 
+#include <sfc/sfc.hpp>
+
 static string sgb_bios;
 static vector<string> cheatList;
 static int aspect_ratio_mode = 0;
@@ -730,6 +732,9 @@ RETRO_API bool retro_load_game(const retro_game_info *game)
 	program->base_name = string(game->path);
 
 	program->load();
+
+    retro_memory_map map={SuperFamicom::bus.host_memory_descriptors.data(), (unsigned)SuperFamicom::bus.host_memory_descriptors.size()};
+    environ_cb(RETRO_ENVIRONMENT_SET_MEMORY_MAPS, &map);
 
 	emulator->connect(SuperFamicom::ID::Port::Controller1, SuperFamicom::ID::Device::Gamepad);
 	emulator->connect(SuperFamicom::ID::Port::Controller2, SuperFamicom::ID::Device::Gamepad);

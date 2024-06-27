@@ -135,7 +135,12 @@ auto Cartridge::loadMap(Markup::Node map, T& memory) -> uint {
   auto mask = map["mask"].natural();
   if(size == 0) size = memory.size();
   if(size == 0) return print("loadMap(): size=0\n"), 0;  //does this ever actually occur?
-  return bus.map({&T::read, &memory}, {&T::write, &memory}, addr, size, base, mask);
+  if(auto mem = game.memory(map)) {
+      return bus.map_host_accessible({&T::read, &memory}, {&T::write, &memory}, addr, size, base, mask,
+              mem->identifier, memory.data());
+  } else {
+      return bus.map({&T::read, &memory}, {&T::write, &memory}, addr, size, base, mask);
+  }
 }
 
 auto Cartridge::loadMap(
